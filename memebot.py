@@ -114,7 +114,7 @@ def main():
 	if not os.path.exists(CACHE_CSV):
 		with open(CACHE_CSV, 'w', newline='') as cache:
 			default = ['This is a list of Reddit post IDs that have already been tweeted by the bot.']
-			wr = csv.writer(cache, newline='')
+			wr = csv.writer(cache)
 			wr.writerow(default)
 		print ('[BOT] ' + CACHE_CSV + ' file not found, created a new one')
 	if not os.path.exists(IMAGE_DIR):
