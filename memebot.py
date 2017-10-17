@@ -10,6 +10,9 @@ import urllib.parse
 import sys
 from glob import glob
 from gfycat.client import GfycatClient
+import distutils.core
+import itertools
+import photohash
 
 # Location of the configuration file
 CONFIG_FILE = 'config.ini'
@@ -92,28 +95,38 @@ def setup_connection_reddit(subreddit):
 	return r.subreddit(subreddit)
 
 def duplicate_check(id):
-	value = False;
+	value = False
 	with open(CACHE_CSV, 'rt', newline='') as f:
 		reader = csv.reader(f, delimiter=',')
 		for row in reader:
 			if id in row:
-				value = True;
+				value = True
+	return value
+	
+def hash_check(hash):
+	value = False
+	# Only extract last three lines from cache file
+	post_list = []
+	with open(CACHE_CSV, 'rt', newline='') as f:
+		for line in f:
+			post_list.append(line)
+			if len(post_list) > REPOST_LIMIT:
+				post_list.pop(0)
+		if any(hash in s for s in post_list):
+			value = True
 	return value
 
-def log_post(id):
-	#with open(POSTED_CACHE, 'a') as file:
-	#	file.write(str(id) + '\n')
-	#	print ('[BOT] Added', id, 'to', POSTED_CACHE)
+def log_post(id, hash):
 	with open(CACHE_CSV, 'a', newline='') as cache:
 			date = time.strftime("%d/%m/%Y") + ' ' + time.strftime("%H:%M:%S")
 			wr = csv.writer(cache, delimiter=',')
-			wr.writerow([id, date])
+			wr.writerow([id, date, hash])
 
 def main():
 	# Make sure logging file and media directory exists
 	if not os.path.exists(CACHE_CSV):
 		with open(CACHE_CSV, 'w', newline='') as cache:
-			default = ['This is a list of Reddit post IDs that have already been tweeted by the bot.']
+			default = ['Post','Date and time','Image hash']
 			wr = csv.writer(cache)
 			wr.writerow(default)
 		print ('[BOT] ' + CACHE_CSV + ' file not found, created a new one')
@@ -157,15 +170,21 @@ def tweeter(post_dict):
 			post_op = post_dict[post][3]
 			# Make sure the post contains media (if it doesn't, then file_path would be blank)
 			if (file_path):
-				print ('[BOT] Posting this on main twitter account:', post, file_path)
-				log_post(post_id)
-				try:
-					api.update_with_media(filename=file_path, status=post)
-					alt_tweeter(post_link, post_op)
-					print('[BOT] Sleeping for', DELAY_BETWEEN_TWEETS, 'seconds')
-					time.sleep(DELAY_BETWEEN_TWEETS)
-				except BaseException as e:
-					print ('[BOT] Error while posting tweet:', str(e))
+				# Scan the image against previously-posted images, but only if repost protection is enabled in config.ini
+				hash = photohash.average_hash(file_path)
+				print ('[BOT] Image hash check:', hash_check(hash))
+				if (REPOST_PROTECTION is True and hash_check(hash) is True):
+					print ('[BOT] Skipping', post_id, 'because it seems to be a repost')
+				else:
+					print ('[BOT] Posting this on main twitter account:', post, file_path)
+					log_post(post_id, hash)
+					try:
+						api.update_with_media(filename=file_path, status=post)
+						alt_tweeter(post_link, post_op)
+						print('[BOT] Sleeping for', DELAY_BETWEEN_TWEETS, 'seconds')
+						time.sleep(DELAY_BETWEEN_TWEETS)
+					except BaseException as e:
+						print ('[BOT] Error while posting tweet:', str(e))
 			else:
 				print ('[BOT] Ignoring', post_id, 'because there was not a media file downloaded')
 			# Cleanup image file
@@ -190,6 +209,8 @@ if __name__ == '__main__':
 	IMAGE_DIR = config['BotSettings']['MediaFolder']
 	DELAY_BETWEEN_TWEETS = int(config['BotSettings']['DelayBetweenTweets'])
 	SUBREDDIT_TO_MONITOR = config['BotSettings']['SubredditToMonitor']
+	REPOST_PROTECTION = bool(distutils.util.strtobool(config['RepostSettings']['RepostProtection']))
+	REPOST_LIMIT = int(config['RepostSettings']['RepostLimit'])
 	ACCESS_TOKEN = config['PrimaryTwitterKeys']['AccessToken']
 	ACCESS_TOKEN_secret = config['PrimaryTwitterKeys']['AccessTokenSecret']
 	CONSUMER_KEY = config['PrimaryTwitterKeys']['ConsumerKey']
