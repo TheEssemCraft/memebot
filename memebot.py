@@ -40,7 +40,7 @@ def get_media(img_url, post_id):
 		# This adds support for all imgur links (including galleries), but I need to make a new regex
 		#if ('i.imgur.com' not in img_url) and ('imgur.com' in img_url):
 			#print('[bot] Attempting to retrieve image URL for', img_url, 'from imgur...')
-			#regex = r"(https?:\/\/imgur\.com\/a\/(.*?)(?:\/.*|$))"
+			#regex = r"(https?:\/\/imgur\.com\/?a?\/(.*?)(?:\/.*|$))"
 			#m = re.search(regex, img_url, flags=0)
 			#print(m.group(0))
 			#img_url = imgur.get_image(img_url)
