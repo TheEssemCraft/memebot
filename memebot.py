@@ -221,6 +221,8 @@ if __name__ == '__main__':
 	ALT_CONSUMER_SECRET = config['AltTwitterKeys']['ConsumerSecret']
 	REDDIT_AGENT = config['Reddit']['Agent']
 	REDDIT_CLIENT_SECRET = config['Reddit']['ClientSecret']
+	IMGUR_CLIENT_ID = config['Imgur']['ClientID']
+	IMGUR_CLIENT_SECRET = config['Imgur']['ClientSecret']
 	# Run the main script
 	while True:
 		main()
