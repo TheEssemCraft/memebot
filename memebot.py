@@ -13,6 +13,7 @@ from gfycat.client import GfycatClient
 import distutils.core
 import itertools
 import photohash
+from imgurpython import ImgurClient
 
 # Location of the configuration file
 CONFIG_FILE = 'config.ini'
@@ -38,12 +39,12 @@ def save_file(img_url, file_path):
 def get_media(img_url, post_id):
 	if any(s in img_url for s in ('i.imgur.com', 'i.redd.it', 'i.reddituploads.com')):
 		# This adds support for all imgur links (including galleries), but I need to make a new regex
-		#if ('i.imgur.com' not in img_url) and ('imgur.com' in img_url):
-			#print('[bot] Attempting to retrieve image URL for', img_url, 'from imgur...')
-			#regex = r"(https?:\/\/imgur\.com\/?a?\/(.*?)(?:\/.*|$))"
-			#m = re.search(regex, img_url, flags=0)
-			#print(m.group(0))
-			#img_url = imgur.get_image(img_url)
+		if ('i.imgur.com' not in img_url) and ('imgur.com' in img_url):
+			print('[bot] Attempting to retrieve image URL for', img_url, 'from imgur...')
+			regex = r"(https?:\/\/imgur\.com\/?a?\/(.*?)(?:\/.*|$))"
+			m = re.search(regex, img_url, flags=0)
+			print(m.group(0))
+			img_url = imgur.get_image(img_url)
 		file_name = os.path.basename(urllib.parse.urlsplit(img_url).path)
 		file_extension = os.path.splitext(img_url)[-1].lower();
 		# Fix for issue with i.reddituploads.com links not having a file extension in the URL
@@ -93,6 +94,10 @@ def setup_connection_reddit(subreddit):
 		client_id=REDDIT_AGENT,
 		client_secret=REDDIT_CLIENT_SECRET)
 	return r.subreddit(subreddit)
+
+def setup_connection_imgur();
+	print ('[BOT] Setting up connection with Imgur')
+	imgur = ImgurClient(IMGUR_CLIENT_ID, IMGUR_CLIENT_SECRET)
 
 def duplicate_check(id):
 	value = False
