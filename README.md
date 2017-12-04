@@ -1,8 +1,6 @@
 # Meme Bot
 
-This is a Python bot that looks up images from a specified subreddit and automatically posts them on Twitter. This was created for the [@ItMeIRL](https://twitter.com/ItMeIRL) and [@ItsMeowIRL](https://twitter.com/ItsMeowIRL) Twitter accounts, based on [reddit-twitter-bot](https://github.com/rhiever/reddit-twitter-bot).
-
-**NOTE**: If you are upgrading to the latest version, make sure you add the new `RepostSettings` section to your `config.ini` file. You can see what it looks like [here](https://github.com/corbindavenport/memebot/blob/master/config.ini).
+This is a Python bot that looks up images from a specified subreddit and automatically posts them on Twitter. It is based on [reddit-twitter-bot](https://github.com/rhiever/reddit-twitter-bot). Memebot was created for the [@ItMeIRL](https://twitter.com/ItMeIRL), [@ItsMeowIRL](https://twitter.com/ItsMeowIRL), and [@PrequelMemesBot](https://twitter.com/PrequelMemesBot) Twitter accounts.
 
 ## Disclaimer
 
@@ -12,19 +10,18 @@ I hold no liability for what you do with this script or what happens to you by u
 
 First, you will need to install Python 3 on your system. After that, you will also need to install the [tweepy](https://github.com/tweepy/tweepy), [PRAW](https://praw.readthedocs.org/en/), [py-gfycat](https://github.com/ankeshanand/py-gfycat), and [PhotoHash](https://github.com/bunchesofdonald/photohash) libraries. You can do so by running these commands:
 
-    pip install tweepy
-    pip install praw
-    pip install gfycat
-    pip install PhotoHash
+    pip3 install tweepy
+    pip3 install praw
+    pip3 install gfycat
+    pip3 install PhotoHash
 
 ## Setting up the bot
 
 All settings for the bot can be found in the `config.ini` file. Open the file in any text editor and add the following info:
 
-1. Under the [BotSettings] section, add the username of the Twitter account you will use to `TwitterUsername` (do not include the @ symbol)
-2. Under the [BotSettings] section, add the name of the subreddit to `SubredditToMonitor` (do not include the /r/)
-3. By default, the bot will wait at least 600 seconds between tweets to prevent spamming, you can change this by editing the `DelayBetweenTweets` setting in the [BotSettings] section
-4. By default, the bot's Repost Protection feature is enabled. Read the below 'Repost options' section to learn more.
+1. Under the [BotSettings] section, add the name of the subreddit to `SubredditToMonitor` (do not include the /r/)
+2. By default, the bot will wait at least 600 seconds between tweets to prevent spamming, you can change this by editing the `DelayBetweenTweets` setting in the [BotSettings] section
+3. By default, the bot's Repost Protection feature is enabled. Read the below 'Repost options' section to learn more.
 
 Next, you'll need to give Meme Bot access to a Twitter account, and add the required information to the config file.
 
